@@ -1,38 +1,13 @@
-version: 2
-
-jobs:
-  docker-test:
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Run test
-          command: |
-            touch .envs/dev.env
-            make docker-test
-  check-linting:
-    docker:
-      - image: circleci/python:3.7
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Install requirements
-          command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements-dev.txt
-      - run:
-          name: Run static checks
-          command: |
-            . venv/bin/activate
-            make check
-
+# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+version: 2.1
+# Use a package of configuration called an orb.
+orbs:
+  # Declare a dependency on the welcome-orb
+  welcome: circleci/welcome-orb@0.4.1
+# Orchestrate or schedule a set of jobs
 workflows:
-  version: 2
-  build:
+  # Name the workflow "welcome"
+  welcome:
+    # Run the welcome/run job in its own container
     jobs:
-      - docker-test
-      - check-linting
+      - welcome/run
